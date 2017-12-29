@@ -6,6 +6,22 @@ class Item {
   }
 }
 
+class ItemDecayerFactory {
+  static createItemDecayer(item) {
+    if (item.name === 'Aged Brie') {
+      return new AgedBrieDecayer(item);
+    } else if (item.name === 'Sulfuras, Hand of Ragnaros') {
+      return new SulfurasDecayer(item);
+    } else if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
+      return new BackstagePassDecayer(item);
+    } else if (item.name === 'Conjured') {
+      return new ConjuredDecayer(item)
+    } else {
+      return new ItemDecayer(item);
+    }
+  }
+}
+
 class ItemDecayer {
   constructor(item) {
     this.item = item;
@@ -85,26 +101,11 @@ class Shop {
   }
 
   updateQuality() {
-    this.items.forEach(item => this.updateItemQuality(item));
+    this.items
+      .map(ItemDecayerFactory.createItemDecayer)
+      .forEach(decayer => decayer.decay());
+
     return this.items;
-  }
-
-  updateItemQuality(item) {
-    let decayer;
-
-    if (item.name === 'Aged Brie') {
-      decayer = new AgedBrieDecayer(item);
-    } else if (item.name === 'Sulfuras, Hand of Ragnaros') {
-      decayer = new SulfurasDecayer(item);
-    } else if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
-      decayer = new BackstagePassDecayer(item);
-    } else if (item.name === 'Conjured') {
-      decayer = new ConjuredDecayer(item)
-    } else {
-      decayer = new ItemDecayer(item);
-    }
-
-    decayer.decay();
   }
 }
 
