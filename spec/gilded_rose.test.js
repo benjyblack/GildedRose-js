@@ -27,6 +27,8 @@ describe('Gilded Rose', () => {
     expect(getItem().quality).toEqual(previousQuality - 1);
   });
 
+  assertQualityChangesTwiceAsFastWhenConjured({ name: 'foo' });
+
   describe('when quality is 0', () => {
     beforeEach(() => {
       gildedRose = createShop({ name: 'foo', quality: 0 });
@@ -51,8 +53,10 @@ describe('Gilded Rose', () => {
   });
 
   describe('Aged Brie', () => {
+    const name = 'Aged Brie';
+
     beforeEach(() => {
-      gildedRose = createShop({ name: 'Aged Brie', quality: 1, sellIn: 1 });
+      gildedRose = createShop({ name, quality: 1, sellIn: 1 });
     });
 
     it('increases in quality by 1 each day', () => {
@@ -62,8 +66,10 @@ describe('Gilded Rose', () => {
     });
 
     describe('when sellIn date has passed', () => {
+      const sellIn = 0;
+
       beforeEach(() => {
-        gildedRose = createShop({ name: 'Aged Brie', quality: 1, sellIn: 0 });
+        gildedRose = createShop({ name, quality: 1, sellIn });
       });
 
       it('increases in quality by 2 each day', () => {
@@ -71,23 +77,30 @@ describe('Gilded Rose', () => {
         gildedRose.updateQuality();
         expect(getItem().quality).toEqual(previousQuality + 2);
       });
+
+      assertQualityChangesTwiceAsFastWhenConjured({ name, sellIn });
     });
 
-    assertQualityDoesNotIncreasePast50({ name: 'Aged Brie' });
+    assertQualityChangesTwiceAsFastWhenConjured({ name });
+    assertQualityDoesNotIncreasePast50({ name });
   });
 
   describe('backstage passes', () => {
+    const name = 'Backstage passes to a TAFKAL80ETC concert';
+
     function createShopWithBackstagePass({ sellIn }) {
       return createShop({
-        name: 'Backstage passes to a TAFKAL80ETC concert',
+        name,
         quality: 10,
         sellIn,
       });
     }
 
     describe('when there are more than 10 days left', () => {
+      const sellIn = 11;
+
       beforeEach(() => {
-        gildedRose = createShopWithBackstagePass({ sellIn: 11 });
+        gildedRose = createShopWithBackstagePass({ sellIn });
       });
 
       it('increases in quality by 1 each day', () => {
@@ -95,11 +108,15 @@ describe('Gilded Rose', () => {
         gildedRose.updateQuality();
         expect(getItem().quality).toEqual(previousQuality + 1);
       });
+
+      assertQualityChangesTwiceAsFastWhenConjured({ name, sellIn });
     });
 
     describe('when there are 10 or fewer days left', () => {
+      const sellIn = 10;
+
       beforeEach(() => {
-        gildedRose = createShopWithBackstagePass({ sellIn: 10 });
+        gildedRose = createShopWithBackstagePass({ sellIn });
       });
 
       it('increases in quality by 2 each day', () => {
@@ -107,11 +124,15 @@ describe('Gilded Rose', () => {
         gildedRose.updateQuality();
         expect(getItem().quality).toEqual(previousQuality + 2);
       });
+
+      assertQualityChangesTwiceAsFastWhenConjured({ name, sellIn });
     });
 
     describe('when there are 5 or fewer days left', () => {
+      const sellIn = 5;
+
       beforeEach(() => {
-        gildedRose = createShopWithBackstagePass({ sellIn: 5 });
+        gildedRose = createShopWithBackstagePass({ sellIn });
       });
 
       it('increases in quality by 3 each day', () => {
@@ -119,11 +140,15 @@ describe('Gilded Rose', () => {
         gildedRose.updateQuality();
         expect(getItem().quality).toEqual(previousQuality + 3);
       });
+
+      assertQualityChangesTwiceAsFastWhenConjured({ name, sellIn });
     });
 
     describe('when there are 0 or fewer days left', () => {
+      const sellIn = 0;
+
       beforeEach(() => {
-        gildedRose = createShopWithBackstagePass({ sellIn: 0 });
+        gildedRose = createShopWithBackstagePass({ sellIn });
       });
 
       it('has 0 quality', () => {
@@ -132,7 +157,7 @@ describe('Gilded Rose', () => {
       });
     });
 
-    assertQualityDoesNotIncreasePast50({ name: 'Backstage passes to a TAFKAL80ETC concert' });
+    assertQualityDoesNotIncreasePast50({ name });
   });
 
   describe('Sulfuras, Hand of Ragnaros', () => {
@@ -153,30 +178,6 @@ describe('Gilded Rose', () => {
     });
   });
 
-  describe('conjured items', () => {
-    beforeEach(() => {
-      gildedRose = createShop({ name: 'Conjured Foo', quality: 4, sellIn: 3 });
-    });
-
-    it('decreases in quality by 2 every day', () => {
-      const previousQuality = getItem().quality;
-      gildedRose.updateQuality();
-      expect(getItem().quality).toEqual(previousQuality - 2);
-    });
-
-    describe('when sellIn date has passed', () => {
-      beforeEach(() => {
-        gildedRose = createShop({ name: 'Conjured', quality: 4, sellIn: 0 });
-      });
-
-      it('decreases in quality by 4 each day', () => {
-        const previousQuality = getItem().quality;
-        gildedRose.updateQuality();
-        expect(getItem().quality).toEqual(previousQuality - 4);
-      });
-    });
-  });
-
   // shared examples
   function assertQualityDoesNotIncreasePast50({ name }) {
     describe('when quality is at 50', () => {
@@ -187,6 +188,30 @@ describe('Gilded Rose', () => {
       it('does not increase past 50', () => {
         gildedRose.updateQuality();
         expect(getItem().quality).toEqual(50);
+      });
+    });
+  }
+
+  function assertQualityChangesTwiceAsFastWhenConjured({ name, quality = 10, sellIn = 10 }) {
+    const originalQuality = quality;
+
+    describe('when conjured', () => {
+      beforeEach(() => {
+        gildedRose = new Shop([
+          new Item(name, sellIn, quality),
+          new Item(`Conjured ${name}`, sellIn, quality),
+        ]);
+      });
+
+      function getConjuredItem() {
+        return gildedRose.items[1];
+      }
+
+      it('degrades twice as fast', () => {
+        gildedRose.updateQuality();
+        const regularDifferenceInQuality = originalQuality - getItem().quality;
+        const conjuredDifferenceInQuality = originalQuality - getConjuredItem().quality;
+        expect(conjuredDifferenceInQuality).toEqual(2 * regularDifferenceInQuality);
       });
     });
   }

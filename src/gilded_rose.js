@@ -8,14 +8,12 @@ class Item {
 
 class ItemDecayerFactory {
   static createItemDecayer(item) {
-    if (item.name === 'Aged Brie') {
+    if (item.name.includes('Aged Brie')) {
       return new AgedBrieDecayer(item);
-    } else if (item.name === 'Sulfuras, Hand of Ragnaros') {
+    } else if (item.name.includes('Sulfuras, Hand of Ragnaros')) {
       return new SulfurasDecayer(item);
-    } else if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
+    } else if (item.name.includes('Backstage passes to a TAFKAL80ETC concert')) {
       return new BackstagePassDecayer(item);
-    } else if (item.name.includes('Conjured')) {
-      return new ConjuredDecayer(item)
     } else {
       return new ItemDecayer(item);
     }
@@ -39,6 +37,10 @@ class ItemDecayer {
       qualityChange *= 2;
     }
 
+    if (this.isConjured()) {
+      qualityChange *= 2;
+    }
+
     const newQuality = this.item.quality + qualityChange;
     this.item.quality = this.clampQuality(newQuality);
   }
@@ -55,6 +57,10 @@ class ItemDecayer {
     return -1;
   }
 
+  isConjured() {
+    return this.item.name.includes('Conjured');
+  }
+
   isPastSellDate() {
     return this.item.sellIn <= 0;
   }
@@ -67,12 +73,6 @@ class ItemDecayer {
 class AgedBrieDecayer extends ItemDecayer {
   getQualityDecayRate() {
     return 1;
-  }
-}
-
-class ConjuredDecayer extends ItemDecayer {
-  getQualityDecayRate() {
-    return -2;
   }
 }
 
