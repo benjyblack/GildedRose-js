@@ -17,32 +17,32 @@ class ItemDecayer {
   }
 
   adjustQuality() {
-    const qualityPointsReduced = this.item.sellIn <= 0 ? 2 : 1;
-    const newQuality = this.item.quality - qualityPointsReduced;
-
-    this.item.quality = Math.max(0, newQuality);
+    const newQuality = this.item.quality + this.getQualityChange();
+    this.item.quality = Math.min(50, Math.max(0, newQuality));
   }
 
   adjustSellIn() {
-    this.item.sellIn -= 1;
+    this.item.sellIn += this.getSellInChange();
+  }
+
+  getQualityChange() {
+    return this.item.sellIn <= 0 ? -2 : -1;
+  }
+
+  getSellInChange() {
+    return -1;
   }
 }
 
 class AgedBrieDecayer extends ItemDecayer {
-  adjustQuality() {
-    const qualityPointsIncreased = this.item.sellIn <= 0 ? 2 : 1;
-    const newQuality = this.item.quality + qualityPointsIncreased;
-
-    this.item.quality = Math.min(50, newQuality);
+  getQualityChange() {
+    return this.item.sellIn <= 0 ? 2 : 1;
   }
 }
 
 class ConjuredDecayer extends ItemDecayer {
-  adjustQuality() {
-    const qualityPointsIncreased = this.item.sellIn <= 0 ? 4 : 2;
-    const newQuality = this.item.quality - qualityPointsIncreased;
-
-    this.item.quality = Math.max(0, newQuality);
+  getQualityChange() {
+    return this.item.sellIn <= 0 ? -4 : -2;
   }
 }
 
@@ -61,19 +61,17 @@ class BackstagePassDecayer extends ItemDecayer {
       return;
     }
 
-    let qualityPointsIncreased;
+    super.adjustQuality();
+  }
 
+  getQualityChange() {
     if (this.item.sellIn <= 5) {
-      qualityPointsIncreased = 3;
+      return 3;
     } else if (this.item.sellIn <= 10) {
-      qualityPointsIncreased = 2;
+      return 2;
     } else {
-      qualityPointsIncreased = 1;
+      return 1;
     }
-
-    const newQuality = this.item.quality + qualityPointsIncreased;
-
-    this.item.quality = Math.min(50, newQuality);
   }
 }
 
