@@ -81,27 +81,17 @@ class Shop {
   updateItemQuality(item) {
     let decayer;
 
-    if (!this.isSpecialItem(item)) {
-      decayer = new ItemDecayer(item);
-    } else if (item.name === 'Aged Brie') {
+    if (item.name === 'Aged Brie') {
       decayer = new AgedBrieDecayer(item);
     } else if (item.name === 'Sulfuras, Hand of Ragnaros') {
       decayer = new SulfurasDecayer(item);
     } else if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
       decayer = new BackstagePassDecayer(item);
+    } else {
+      decayer = new ItemDecayer(item);
     }
 
     decayer.decay();
-  }
-
-  isSpecialItem(item) {
-    const SPECIAL_ITEMS = [
-      'Aged Brie',
-      'Backstage passes to a TAFKAL80ETC concert',
-      'Sulfuras, Hand of Ragnaros',
-    ];
-
-    return SPECIAL_ITEMS.includes(item.name);
   }
 }
 
