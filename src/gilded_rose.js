@@ -37,6 +37,16 @@ class AgedBrieDecayer extends ItemDecayer {
   }
 }
 
+class SulfurasDecayer extends ItemDecayer {
+  adjustQuality() {
+    return;
+  }
+
+  adjustSellIn() {
+    return;
+  }
+}
+
 class Shop {
   constructor(items=[]){
     this.items = items;
@@ -49,6 +59,10 @@ class Shop {
         return;
       } else if (item.name === 'Aged Brie') {
         const decayer = new AgedBrieDecayer(item);
+        decayer.decay();
+        return;
+      } else if (item.name === 'Sulfuras, Hand of Ragnaros') {
+        const decayer = new SulfurasDecayer(item);
         decayer.decay();
         return;
       }
