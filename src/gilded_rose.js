@@ -18,11 +18,22 @@ class ItemDecayer {
 
   adjustQuality() {
     const qualityPointsReduced = this.item.sellIn <= 0 ? 2 : 1;
-    this.item.quality = Math.max(0, this.item.quality - qualityPointsReduced);
+    const newQuality = this.item.quality - qualityPointsReduced;
+
+    this.item.quality = Math.max(0, newQuality);
   }
 
   adjustSellIn() {
     this.item.sellIn -= 1;
+  }
+}
+
+class AgedBrieDecayer extends ItemDecayer {
+  adjustQuality() {
+    const qualityPointsIncreased = this.item.sellIn <= 0 ? 2 : 1;
+    const newQuality = this.item.quality + qualityPointsIncreased;
+
+    this.item.quality = Math.min(50, newQuality);
   }
 }
 
@@ -34,6 +45,10 @@ class Shop {
     this.items.forEach((item) => {
       if (!this.isSpecialItem(item)) {
         const decayer = new ItemDecayer(item);
+        decayer.decay();
+        return;
+      } else if (item.name === 'Aged Brie') {
+        const decayer = new AgedBrieDecayer(item);
         decayer.decay();
         return;
       }
