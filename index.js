@@ -2,6 +2,7 @@ const Shop = require('./src/shop');
 const Item = require('./src/item');
 
 const ShopDecorator = require('./src/shop-decorator');
+const ShopSimulator = require('./src/shop-simulator');
 
 const shop = new Shop([
   new Item('Shield', 2, 10),
@@ -12,17 +13,6 @@ const shop = new Shop([
 ]);
 
 const shopDecorator = new ShopDecorator(shop);
+const shopSimulator = new ShopSimulator(shop, shopDecorator);
 
-console.log('At Start');
-shopDecorator.logInventory();
-
-simulateDaysPassing(5, shop);
-
-function simulateDaysPassing(numDays, shop) {
-  [...Array(numDays)].forEach((_, idx) => {
-    const dayNum = idx + 1;
-    console.log(`After Day ${dayNum}`);
-    shop.updateQuality();
-    shopDecorator.logInventory();
-  });
-}
+shopSimulator.simulateDaysPassing(5);
