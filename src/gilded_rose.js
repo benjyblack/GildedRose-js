@@ -18,7 +18,7 @@ class ItemDecayer {
 
   adjustQuality() {
     const newQuality = this.item.quality + this.getQualityChange();
-    this.item.quality = Math.min(50, Math.max(0, newQuality));
+    this.item.quality = this.clampQuality(newQuality);
   }
 
   adjustSellIn() {
@@ -31,6 +31,10 @@ class ItemDecayer {
 
   getSellInChange() {
     return -1;
+  }
+
+  clampQuality(quality) {
+    return Math.min(50, Math.max(0, quality));
   }
 }
 
