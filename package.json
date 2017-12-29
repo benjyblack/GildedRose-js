@@ -2,11 +2,12 @@
   "name": "gilded_rose_js",
   "version": "1.0.0",
   "description": "",
-  "main": "src/gilded_rose.js",
+  "main": "index.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
+    "start": "node index.js",
     "test": "jest"
   },
   "repository": {
