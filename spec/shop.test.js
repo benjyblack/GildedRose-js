@@ -1,30 +1,30 @@
 const Shop = require('../src/shop');
 const Item = require('../src/item');
 
-describe('Gilded Rose', () => {
-  let gildedRose;
+describe('Shop', () => {
+  let shop;
 
   function createShop({ name, sellIn = 0, quality = 0 }) {
     return new Shop([ new Item(name, sellIn, quality) ]);
   }
 
   function getItem() {
-    return gildedRose.items[0];
+    return shop.items[0];
   }
 
   beforeEach(() => {
-    gildedRose = createShop({ name: 'foo', quality: 1, sellIn: 0 });
+    shop = createShop({ name: 'foo', quality: 1, sellIn: 0 });
   });
 
   it('reduces sellIn by 1 each day', () => {
     const previousSellIn = getItem().sellIn;
-    gildedRose.updateQuality();
+    shop.updateQuality();
     expect(getItem().sellIn).toEqual(previousSellIn - 1);
   });
 
   it('reduces quality by 1 each day', () => {
     const previousQuality = getItem().quality;
-    gildedRose.updateQuality();
+    shop.updateQuality();
     expect(getItem().quality).toEqual(previousQuality - 1);
   });
 
@@ -32,23 +32,23 @@ describe('Gilded Rose', () => {
 
   describe('when quality is 0', () => {
     beforeEach(() => {
-      gildedRose = createShop({ name: 'foo', quality: 0 });
+      shop = createShop({ name: 'foo', quality: 0 });
     });
 
     it('does not reduce quality below 0', () => {
-      gildedRose.updateQuality();
+      shop.updateQuality();
       expect(getItem().quality).toEqual(0);
     });
   });
 
   describe('when sellIn date has passed', () => {
     beforeEach(() => {
-      gildedRose = createShop({ name: 'foo', quality: 2, sellIn: 0 });
+      shop = createShop({ name: 'foo', quality: 2, sellIn: 0 });
     });
 
     it('reduces quality by 2 each day', () => {
       const previousQuality = getItem().quality;
-      gildedRose.updateQuality();
+      shop.updateQuality();
       expect(getItem().quality).toEqual(previousQuality - 2);
     });
   });
@@ -57,12 +57,12 @@ describe('Gilded Rose', () => {
     const name = 'Aged Brie';
 
     beforeEach(() => {
-      gildedRose = createShop({ name, quality: 1, sellIn: 1 });
+      shop = createShop({ name, quality: 1, sellIn: 1 });
     });
 
     it('increases in quality by 1 each day', () => {
       const previousQuality = getItem().quality;
-      gildedRose.updateQuality();
+      shop.updateQuality();
       expect(getItem().quality).toEqual(previousQuality + 1);
     });
 
@@ -70,12 +70,12 @@ describe('Gilded Rose', () => {
       const sellIn = 0;
 
       beforeEach(() => {
-        gildedRose = createShop({ name, quality: 1, sellIn });
+        shop = createShop({ name, quality: 1, sellIn });
       });
 
       it('increases in quality by 2 each day', () => {
         const previousQuality = getItem().quality;
-        gildedRose.updateQuality();
+        shop.updateQuality();
         expect(getItem().quality).toEqual(previousQuality + 2);
       });
 
@@ -101,12 +101,12 @@ describe('Gilded Rose', () => {
       const sellIn = 11;
 
       beforeEach(() => {
-        gildedRose = createShopWithBackstagePass({ sellIn });
+        shop = createShopWithBackstagePass({ sellIn });
       });
 
       it('increases in quality by 1 each day', () => {
         const previousQuality = getItem().quality;
-        gildedRose.updateQuality();
+        shop.updateQuality();
         expect(getItem().quality).toEqual(previousQuality + 1);
       });
 
@@ -117,12 +117,12 @@ describe('Gilded Rose', () => {
       const sellIn = 10;
 
       beforeEach(() => {
-        gildedRose = createShopWithBackstagePass({ sellIn });
+        shop = createShopWithBackstagePass({ sellIn });
       });
 
       it('increases in quality by 2 each day', () => {
         const previousQuality = getItem().quality;
-        gildedRose.updateQuality();
+        shop.updateQuality();
         expect(getItem().quality).toEqual(previousQuality + 2);
       });
 
@@ -133,12 +133,12 @@ describe('Gilded Rose', () => {
       const sellIn = 5;
 
       beforeEach(() => {
-        gildedRose = createShopWithBackstagePass({ sellIn });
+        shop = createShopWithBackstagePass({ sellIn });
       });
 
       it('increases in quality by 3 each day', () => {
         const previousQuality = getItem().quality;
-        gildedRose.updateQuality();
+        shop.updateQuality();
         expect(getItem().quality).toEqual(previousQuality + 3);
       });
 
@@ -149,11 +149,11 @@ describe('Gilded Rose', () => {
       const sellIn = 0;
 
       beforeEach(() => {
-        gildedRose = createShopWithBackstagePass({ sellIn });
+        shop = createShopWithBackstagePass({ sellIn });
       });
 
       it('has 0 quality', () => {
-        gildedRose.updateQuality();
+        shop.updateQuality();
         expect(getItem().quality).toEqual(0);
       });
     });
@@ -163,18 +163,18 @@ describe('Gilded Rose', () => {
 
   describe('Sulfuras, Hand of Ragnaros', () => {
     beforeEach(() => {
-      gildedRose = createShop({ name: 'Sulfuras, Hand of Ragnaros', quality: 80, sellIn: 10 });
+      shop = createShop({ name: 'Sulfuras, Hand of Ragnaros', quality: 80, sellIn: 10 });
     });
 
     it('does not decrease in quality', () => {
       const previousQuality = getItem().quality;
-      gildedRose.updateQuality();
+      shop.updateQuality();
       expect(getItem().quality).toEqual(previousQuality);
     });
 
     it('does not reduce sellIn date', () => {
       const previousSellIn = getItem().sellIn;
-      gildedRose.updateQuality();
+      shop.updateQuality();
       expect(getItem().sellIn).toEqual(previousSellIn);
     });
   });
@@ -183,11 +183,11 @@ describe('Gilded Rose', () => {
   function assertQualityDoesNotIncreasePast50({ name }) {
     describe('when quality is at 50', () => {
       beforeEach(() => {
-        gildedRose = createShop({ name, quality: 50, sellIn: 10 });
+        shop = createShop({ name, quality: 50, sellIn: 10 });
       });
 
       it('does not increase past 50', () => {
-        gildedRose.updateQuality();
+        shop.updateQuality();
         expect(getItem().quality).toEqual(50);
       });
     });
@@ -198,18 +198,18 @@ describe('Gilded Rose', () => {
 
     describe('when conjured', () => {
       beforeEach(() => {
-        gildedRose = new Shop([
+        shop = new Shop([
           new Item(name, sellIn, quality),
           new Item(`Conjured ${name}`, sellIn, quality),
         ]);
       });
 
       function getConjuredItem() {
-        return gildedRose.items[1];
+        return shop.items[1];
       }
 
       it('degrades twice as fast', () => {
-        gildedRose.updateQuality();
+        shop.updateQuality();
         const regularDifferenceInQuality = originalQuality - getItem().quality;
         const conjuredDifferenceInQuality = originalQuality - getConjuredItem().quality;
         expect(conjuredDifferenceInQuality).toEqual(2 * regularDifferenceInQuality);
