@@ -47,6 +47,29 @@ class SulfurasDecayer extends ItemDecayer {
   }
 }
 
+class BackstagePassDecayer extends ItemDecayer {
+  adjustQuality() {
+    if (this.item.sellIn <= 0) {
+      this.item.quality = 0;
+      return;
+    }
+
+    let qualityPointsIncreased;
+
+    if (this.item.sellIn <= 5) {
+      qualityPointsIncreased = 3;
+    } else if (this.item.sellIn <= 10) {
+      qualityPointsIncreased = 2;
+    } else {
+      qualityPointsIncreased = 1;
+    }
+
+    const newQuality = this.item.quality + qualityPointsIncreased;
+
+    this.item.quality = Math.min(50, newQuality);
+  }
+}
+
 class Shop {
   constructor(items=[]){
     this.items = items;
@@ -63,6 +86,10 @@ class Shop {
         return;
       } else if (item.name === 'Sulfuras, Hand of Ragnaros') {
         const decayer = new SulfurasDecayer(item);
+        decayer.decay();
+        return;
+      } else if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
+        const decayer = new BackstagePassDecayer(item);
         decayer.decay();
         return;
       }
