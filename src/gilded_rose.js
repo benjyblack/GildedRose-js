@@ -33,19 +33,25 @@ class ItemDecayer {
   }
 
   adjustQuality() {
-    const newQuality = this.item.quality + this.getQualityChange();
+    let qualityChange = this.getQualityDecayRate();
+
+    if (this.isPastSellDate()) {
+      qualityChange *= 2;
+    }
+
+    const newQuality = this.item.quality + qualityChange;
     this.item.quality = this.clampQuality(newQuality);
   }
 
   adjustSellIn() {
-    this.item.sellIn += this.getSellInChange();
+    this.item.sellIn += this.getSellInDecayRate();
   }
 
-  getQualityChange() {
-    return this.isPastSellDate() ? -2 : -1;
+  getQualityDecayRate() {
+    return -1;
   }
 
-  getSellInChange() {
+  getSellInDecayRate() {
     return -1;
   }
 
@@ -59,14 +65,14 @@ class ItemDecayer {
 }
 
 class AgedBrieDecayer extends ItemDecayer {
-  getQualityChange() {
-    return this.isPastSellDate() ? 2 : 1;
+  getQualityDecayRate() {
+    return 1;
   }
 }
 
 class ConjuredDecayer extends ItemDecayer {
-  getQualityChange() {
-    return this.isPastSellDate() ? -4 : -2;
+  getQualityDecayRate() {
+    return -2;
   }
 }
 
@@ -88,7 +94,7 @@ class BackstagePassDecayer extends ItemDecayer {
     super.adjustQuality();
   }
 
-  getQualityChange() {
+  getQualityDecayRate() {
     if (this.item.sellIn <= 5) {
       return 3;
     } else if (this.item.sellIn <= 10) {
