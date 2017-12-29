@@ -14,7 +14,7 @@ class ItemDecayerFactory {
       return new SulfurasDecayer(item);
     } else if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
       return new BackstagePassDecayer(item);
-    } else if (item.name === 'Conjured') {
+    } else if (item.name.includes('Conjured')) {
       return new ConjuredDecayer(item)
     } else {
       return new ItemDecayer(item);
@@ -42,11 +42,15 @@ class ItemDecayer {
   }
 
   getQualityChange() {
-    return this.item.sellIn <= 0 ? -2 : -1;
+    return this.isPastSellDate() ? -2 : -1;
   }
 
   getSellInChange() {
     return -1;
+  }
+
+  isPastSellDate() {
+    return this.item.sellIn <= 0;
   }
 
   clampQuality(quality) {
@@ -56,13 +60,13 @@ class ItemDecayer {
 
 class AgedBrieDecayer extends ItemDecayer {
   getQualityChange() {
-    return this.item.sellIn <= 0 ? 2 : 1;
+    return this.isPastSellDate() ? 2 : 1;
   }
 }
 
 class ConjuredDecayer extends ItemDecayer {
   getQualityChange() {
-    return this.item.sellIn <= 0 ? -4 : -2;
+    return this.isPastSellDate() ? -4 : -2;
   }
 }
 
@@ -76,7 +80,7 @@ class SulfurasDecayer extends ItemDecayer {
 
 class BackstagePassDecayer extends ItemDecayer {
   adjustQuality() {
-    if (this.item.sellIn <= 0) {
+    if (this.isPastSellDate()) {
       this.item.quality = 0;
       return;
     }

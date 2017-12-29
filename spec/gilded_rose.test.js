@@ -12,7 +12,7 @@ describe('Gilded Rose', () => {
   }
 
   beforeEach(() => {
-    gildedRose = createShop({ item: 'foo', quality: 1, sellIn: 0 });
+    gildedRose = createShop({ name: 'foo', quality: 1, sellIn: 0 });
   });
 
   it('reduces sellIn by 1 each day', () => {
@@ -155,7 +155,7 @@ describe('Gilded Rose', () => {
 
   describe('conjured items', () => {
     beforeEach(() => {
-      gildedRose = createShop({ name: 'Conjured', quality: 4, sellIn: 3 });
+      gildedRose = createShop({ name: 'Conjured Foo', quality: 4, sellIn: 3 });
     });
 
     it('decreases in quality by 2 every day', () => {
