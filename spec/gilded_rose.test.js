@@ -66,7 +66,7 @@ describe('Gilded Rose', () => {
         gildedRose = createShop({ name: 'Aged Brie', quality: 1, sellIn: 0 });
       });
 
-      it('increases in quality by two each day', () => {
+      it('increases in quality by 2 each day', () => {
         const previousQuality = getItem().quality;
         gildedRose.updateQuality();
         expect(getItem().quality).toEqual(previousQuality + 2);
@@ -153,8 +153,28 @@ describe('Gilded Rose', () => {
     });
   });
 
-  xdescribe('conjured items', () => {
+  describe('conjured items', () => {
+    beforeEach(() => {
+      gildedRose = createShop({ name: 'Conjured', quality: 4, sellIn: 3 });
+    });
 
+    it('decreases in quality by 2 every day', () => {
+      const previousQuality = getItem().quality;
+      gildedRose.updateQuality();
+      expect(getItem().quality).toEqual(previousQuality - 2);
+    });
+
+    describe('when sellIn date has passed', () => {
+      beforeEach(() => {
+        gildedRose = createShop({ name: 'Conjured', quality: 4, sellIn: 0 });
+      });
+
+      it('decreases in quality by 4 each day', () => {
+        const previousQuality = getItem().quality;
+        gildedRose.updateQuality();
+        expect(getItem().quality).toEqual(previousQuality - 4);
+      });
+    });
   });
 
   // shared examples

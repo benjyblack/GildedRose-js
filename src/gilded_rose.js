@@ -37,6 +37,15 @@ class AgedBrieDecayer extends ItemDecayer {
   }
 }
 
+class ConjuredDecayer extends ItemDecayer {
+  adjustQuality() {
+    const qualityPointsIncreased = this.item.sellIn <= 0 ? 4 : 2;
+    const newQuality = this.item.quality - qualityPointsIncreased;
+
+    this.item.quality = Math.max(0, newQuality);
+  }
+}
+
 class SulfurasDecayer extends ItemDecayer {
   adjustQuality() {
   }
@@ -87,6 +96,8 @@ class Shop {
       decayer = new SulfurasDecayer(item);
     } else if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
       decayer = new BackstagePassDecayer(item);
+    } else if (item.name === 'Conjured') {
+      decayer = new ConjuredDecayer(item)
     } else {
       decayer = new ItemDecayer(item);
     }
