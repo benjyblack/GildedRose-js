@@ -4,7 +4,7 @@ const Item = require('../src/item');
 describe('Shop', () => {
   let shop;
 
-  function createShop({ name, sellIn = 0, quality = 0 }) {
+  function createShop({ name, sellIn = 10, quality = 10 }) {
     return new Shop([ new Item(name, sellIn, quality) ]);
   }
 
@@ -89,19 +89,11 @@ describe('Shop', () => {
   describe('backstage passes', () => {
     const name = 'Backstage passes to a TAFKAL80ETC concert';
 
-    function createShopWithBackstagePass({ sellIn }) {
-      return createShop({
-        name,
-        quality: 10,
-        sellIn,
-      });
-    }
-
     describe('when there are more than 10 days left', () => {
       const sellIn = 11;
 
       beforeEach(() => {
-        shop = createShopWithBackstagePass({ sellIn });
+        shop = createShop({ name, sellIn });
       });
 
       it('increases in quality by 1 each day', () => {
@@ -117,7 +109,7 @@ describe('Shop', () => {
       const sellIn = 10;
 
       beforeEach(() => {
-        shop = createShopWithBackstagePass({ sellIn });
+        shop = createShop({ name, sellIn });
       });
 
       it('increases in quality by 2 each day', () => {
@@ -133,7 +125,7 @@ describe('Shop', () => {
       const sellIn = 5;
 
       beforeEach(() => {
-        shop = createShopWithBackstagePass({ sellIn });
+        shop = createShop({ name, sellIn });
       });
 
       it('increases in quality by 3 each day', () => {
@@ -149,7 +141,7 @@ describe('Shop', () => {
       const sellIn = 0;
 
       beforeEach(() => {
-        shop = createShopWithBackstagePass({ sellIn });
+        shop = createShop({ name, sellIn });
       });
 
       it('has 0 quality', () => {
