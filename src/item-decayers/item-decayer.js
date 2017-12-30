@@ -1,6 +1,11 @@
+const MathExtensions = require('../lib/math-extensions');
+
 class ItemDecayer {
   constructor(item) {
     this.item = item;
+
+    this.QUALITY_UPPER_BOUND = 50;
+    this.QUALITY_LOWER_BOUND = 0;
   }
 
   decay() {
@@ -44,7 +49,11 @@ class ItemDecayer {
   }
 
   clampQuality(quality) {
-    return Math.min(50, Math.max(0, quality));
+    return MathExtensions.clamp(
+      this.QUALITY_LOWER_BOUND,
+      this.QUALITY_UPPER_BOUND,
+      quality
+    );
   }
 }
 
